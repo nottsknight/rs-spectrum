@@ -1,3 +1,6 @@
+use rs_spectrum::RSSpectrum;
+
 fn main() {
-    println!("Hello, world!");
+    let _emu = RSSpectrum::new();
+    println!("Hello, RS Spectrum!");
 }
