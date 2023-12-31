@@ -1,5 +1,6 @@
 mod load8;
 use super::{insts::Instr, Register, Z80};
+use load8::load8;
 
 #[inline]
 fn bits_to_reg(bits: u8) -> Option<Register> {
@@ -31,6 +32,8 @@ macro_rules! options {
     };
 }
 
+pub(crate) use options;
+
 #[cfg(test)]
 mod options_tests {
     use rstest::*;
@@ -56,10 +59,6 @@ const LOW_THREE: u8 = 0b00000111;
 
 impl Z80 {
     pub fn decode(&self, mem: &[u8]) -> DecodeResult {
-        options!(
-            load8::load_r_r(mem),
-            load8::load_r_n(mem),
-            load8::load_r_hl(mem)
-        )
+        options!(load8(mem))
     }
 }
