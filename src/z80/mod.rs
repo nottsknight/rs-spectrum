@@ -3,27 +3,31 @@ use std::{thread, time};
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
+#[macro_export]
 macro_rules! upper {
     ($x:expr) => {
         ($x & 0xff00) >> 8
     };
 }
 
+#[macro_export]
 macro_rules! set_upper {
     ($x:expr, $n:expr) => {
-        $x = ($x & 0x00ff) | ($n << 8)
+        $x = ($x & 0x00ff) | (($n & 0x00ff) << 8)
     };
 }
 
+#[macro_export]
 macro_rules! lower {
     ($x:expr) => {
         $x & 0x00ff
     };
 }
 
+#[macro_export]
 macro_rules! set_lower {
     ($x:expr, $n:expr) => {
-        $x = ($x & 0xff00) | $n
+        $x = ($x & 0xff00) | ($n & 0x00ff)
     };
 }
 
@@ -75,6 +79,13 @@ pub struct Z80 {
 }
 
 impl Z80 {
+    /// Returns the value of the specified register.
+    /// 
+    /// Note that if a single-width register is specified, only the lower 8 bits
+    /// of the return value will be set.
+    /// 
+    /// # Arguments
+    /// - `reg`: register to get
     pub fn reg(&self, reg: Register) -> u16 {
         match reg {
             Register::A => upper!(self.af),
@@ -91,6 +102,24 @@ impl Z80 {
         }
     }
 
+    /// Sets the value of the specified register.
+    /// 
+    /// When setting a single-width register, only the lower 8 bits of `val` will be
+    /// used. The argument is `u16` to allow for setting double-width registers in the
+    /// same method.
+    /// 
+    /// # Arguments
+    /// 
+    /// - `reg`: register to set
+    /// - `val`: value to set
+    /// 
+    /// # Example
+    /// ```
+    /// # use rs_spectrum::z80::{Register, Z80};
+    /// # let mut cpu: Z80 = Default::default();
+    /// cpu.set_reg(Register::C, 0xabcd);
+    /// assert_eq!(0xcd, cpu.reg(Register::C));
+    /// ```
     pub fn set_reg(&mut self, reg: Register, val: u16) {
         match reg {
             Register::A => set_upper!(self.af, val),
@@ -115,8 +144,8 @@ impl Z80 {
         loop {
             let m = self.fetch(mem);
             let (inst, width) = self.decode(m)?;
-            self.execute(inst);
             self.prog_counter += width as u16;
+            self.execute(inst);
             thread::sleep(CLOCK_SPEED);
         }
     }
