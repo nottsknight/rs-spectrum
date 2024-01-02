@@ -31,6 +31,7 @@ impl Z80 {
             Instr::LD_A_R => load8::load_a_r(self),
             Instr::LD_I_A => load8::load_i_a(self),
             Instr::LD_R_A => load8::load_r_a(self),
+            _ => () // TODO: Delete after implementing all
         }
     }
 }

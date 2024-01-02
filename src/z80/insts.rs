@@ -29,4 +29,19 @@ pub enum Instr {
     LD_A_R,
     LD_I_A,
     LD_R_A,
+    // Exchange and Transfer
+    EX_DE_HL,
+    EX_AF_AF1,
+    EXX,
+    EX_SP_HL,
+    EX_SP_IX,
+    EX_SP_IY,
+    LDI,
+    LDIR,
+    LDD,
+    LDDR,
+    CPI,
+    CPIR,
+    CPD,
+    CPDR
 }
