@@ -1,5 +1,6 @@
 use super::{Z80, insts::Instr};
 mod load8;
+mod exchange;
 
 impl Z80 {
     /// Execute a single instruction.
@@ -31,7 +32,21 @@ impl Z80 {
             Instr::LD_A_R => load8::load_a_r(self),
             Instr::LD_I_A => load8::load_i_a(self),
             Instr::LD_R_A => load8::load_r_a(self),
-            _ => () // TODO: Delete after implementing all
+            // Exchange, Swap, Search
+            Instr::EX_DE_HL => exchange::exchange_de_hl(self),
+            Instr::EX_AF_AF1 => exchange::exchange_af_af1(self),
+            Instr::EXX => exchange::exchange_exx(self),
+            Instr::EX_SP_HL => exchange::exchange_sp_hl(self, mem),
+            Instr::EX_SP_IX => exchange::exchange_sp_ix(self, mem),
+            Instr::EX_SP_IY => exchange::exchange_sp_iy(self, mem),
+            Instr::LDI => exchange::exchange_ldi(self, mem),
+            Instr::LDIR => exchange::exchange_ldir(self, mem),
+            Instr::LDD => exchange::exchange_ldd(self, mem),
+            Instr::LDDR => exchange::exchange_lddr(self, mem),
+            Instr::CPI => todo!(),
+            Instr::CPIR => todo!(),
+            Instr::CPD => todo!(),
+            Instr::CPDR => todo!(),
         }
     }
 }
