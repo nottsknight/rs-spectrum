@@ -148,7 +148,7 @@ impl Z80 {
             let m = self.fetch(mem);
             let (inst, width) = self.decode(m)?;
             self.prog_counter += width as u16;
-            self.execute(inst);
+            self.execute(inst, mem);
             thread::sleep(CLOCK_SPEED);
         }
     }
