@@ -114,7 +114,7 @@ impl Z80 {
     ///
     /// # Example
     /// ```
-    /// # use rs_spectrum::z80::{Register, Z80};
+    /// # use spectrum::z80::{Register, Z80};
     /// # let mut cpu: Z80 = Default::default();
     /// cpu.set_reg(Register::C, 0xabcd);
     /// assert_eq!(0xcd, cpu.reg(Register::C));

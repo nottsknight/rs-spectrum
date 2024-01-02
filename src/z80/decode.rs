@@ -29,7 +29,7 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
 /// 
 /// # Example
 /// ```
-/// # #[macro_use(options)] extern crate rs_spectrum;
+/// # #[macro_use(options)] extern crate spectrum;
 /// # fn main() {
 /// let x = options!(None::<u8>, None::<u8>, Some(2), Some(3));
 /// assert_eq!(Some(2), x);
