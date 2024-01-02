@@ -1,4 +1,4 @@
-use rs_spectrum::RSSpectrum;
+use spectrum::RSSpectrum;
 
 fn main() {
     let mut emu = RSSpectrum::new();

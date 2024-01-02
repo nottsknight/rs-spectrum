@@ -11,7 +11,7 @@ license = "MIT"
 categories = ["emulators"]
 
 [lib]
-name = "rs_spectrum"
+name = "spectrum"
 
 [dev-dependencies]
 rstest = "0.18.2"
