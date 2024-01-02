@@ -26,7 +26,9 @@ pub fn load8(mem: &[u8]) -> DecodeResult {
         load_de_a(mem),
         load_nn_a(mem),
         load_a_i(mem),
-        load_a_r(mem)
+        load_a_r(mem),
+        load_i_a(mem),
+        load_r_a(mem)
     )
 }
 
@@ -206,5 +208,21 @@ fn load_a_r(mem: &[u8]) -> DecodeResult {
         None
     } else {
         Some((Instr::LD_A_R, 1))
+    }
+}
+
+fn load_i_a(mem: &[u8]) -> DecodeResult {
+    if mem[0] != 0xed || mem[1] != 0x47 {
+        None
+    } else {
+        Some((Instr::LD_I_A, 1))
+    }
+}
+
+fn load_r_a(mem: &[u8]) -> DecodeResult {
+    if mem[0] != 0xed || mem[1] != 0x4f {
+        None
+    } else {
+        Some((Instr::LD_R_A, 1))
     }
 }
