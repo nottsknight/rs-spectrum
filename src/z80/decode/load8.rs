@@ -5,7 +5,6 @@ use super::{bits_to_reg, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
 /// Attempt to decode an 8-bit load instruction from the provided memory slice.
 /// 
 /// # Arguments
-/// 
 /// - `mem`: slice of memory with the instruction to decode beginning at `mem[0]`
 pub fn load8(mem: &[u8]) -> DecodeResult {
     options!(

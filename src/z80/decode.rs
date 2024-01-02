@@ -6,7 +6,6 @@ use load8::load8;
 /// Returns a [`Register`] if the provided three-bit value maps to a register name.
 /// 
 /// # Arguments
-/// 
 /// - `bits`: the bits to convert
 #[inline]
 fn bits_to_reg(bits: u8) -> Option<Register> {
@@ -26,7 +25,6 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
 /// value it finds, or `None` if none of the expressions succeed.
 /// 
 /// # Arguments
-/// 
 /// Any number of `Option` expressions, separated by commas.
 /// 
 /// # Example
@@ -79,6 +77,10 @@ const MID_THREE: u8 = 0b00111000;
 const LOW_THREE: u8 = 0b00000111;
 
 impl Z80 {
+    /// Attempts to decode an instruction that begins at the start of the provided slice.
+    /// 
+    /// # Arguments
+    /// - `mem`: slice containing the instruction to decode
     pub fn decode(&self, mem: &[u8]) -> DecodeResult {
         options!(load8(mem))
     }

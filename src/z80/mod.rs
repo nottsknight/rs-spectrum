@@ -80,10 +80,10 @@ pub struct Z80 {
 
 impl Z80 {
     /// Returns the value of the specified register.
-    /// 
+    ///
     /// Note that if a single-width register is specified, only the lower 8 bits
     /// of the return value will be set.
-    /// 
+    ///
     /// # Arguments
     /// - `reg`: register to get
     pub fn reg(&self, reg: Register) -> u16 {
@@ -103,16 +103,15 @@ impl Z80 {
     }
 
     /// Sets the value of the specified register.
-    /// 
+    ///
     /// When setting a single-width register, only the lower 8 bits of `val` will be
     /// used. The argument is `u16` to allow for setting double-width registers in the
     /// same method.
-    /// 
+    ///
     /// # Arguments
-    /// 
     /// - `reg`: register to set
     /// - `val`: value to set
-    /// 
+    ///
     /// # Example
     /// ```
     /// # use rs_spectrum::z80::{Register, Z80};
@@ -136,6 +135,10 @@ impl Z80 {
         }
     }
 
+    /// Return a slice of memory beginning at the current program counter.
+    /// 
+    /// # Arguments
+    /// - `memory`: slice representing the entire memory
     fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
         &memory[self.prog_counter as usize..]
     }
@@ -151,6 +154,64 @@ impl Z80 {
     }
 }
 
+#[cfg(test)]
+mod z80_tests {
+    use super::*;
+    use rstest::*;
+
+    #[fixture]
+    fn z80() -> Z80 {
+        Default::default()
+    }
+
+    #[rstest]
+    #[case::a(Register::A, 0x01)]
+    #[case::b(Register::B, 0x45)]
+    #[case::c(Register::C, 0x67)]
+    #[case::bc(Register::BC, 0x4567)]
+    #[case::d(Register::D, 0x89)]
+    #[case::e(Register::E, 0xab)]
+    #[case::de(Register::DE, 0x89ab)]
+    #[case::h(Register::H, 0xcd)]
+    #[case::l(Register::L, 0xef)]
+    #[case::hl(Register::HL, 0xcdef)]
+    fn test_get_reg(mut z80: Z80, #[case] rname: Register, #[case] expected: u16) {
+        z80.af = 0x0123;
+        z80.bc = 0x4567;
+        z80.de = 0x89ab;
+        z80.hl = 0xcdef;
+        let r = z80.reg(rname);
+        assert_eq!(expected, r);
+    }
+
+    #[rstest]
+    #[case::a(Register::A, 0x01)]
+    #[case::b(Register::B, 0x45)]
+    #[case::c(Register::C, 0x67)]
+    #[case::bc(Register::BC, 0x4567)]
+    #[case::d(Register::D, 0x89)]
+    #[case::e(Register::E, 0xab)]
+    #[case::de(Register::DE, 0x89ab)]
+    #[case::h(Register::H, 0xcd)]
+    #[case::l(Register::L, 0xef)]
+    #[case::hl(Register::HL, 0xcdef)]
+    fn test_set_reg(mut z80: Z80, #[case] rname: Register, #[case] val: u16) {
+        z80.set_reg(rname, val);
+        assert_eq!(val, z80.reg(rname));
+    }
+    
+    #[rstest]
+    fn test_fetch(mut z80: Z80) {
+        z80.prog_counter = 2;
+        let mem = vec![0x12, 0x34, 0x56, 0x78, 0x9a];
+        let s = z80.fetch(&mem);
+        assert_eq!(0x56, s[0]);
+        assert_eq!(0x78, s[1]);
+        assert_eq!(0x9a, s[2]);
+    }
+}
+
+/// Enums for identifying specific registers in other methods.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Register {
     A,
