@@ -1,3 +1,5 @@
+#![feature(bigint_helper_methods)]
+
 pub mod z80;
 use z80::Z80;
 
