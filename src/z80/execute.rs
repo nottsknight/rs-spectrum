@@ -43,10 +43,10 @@ impl Z80 {
             Instr::LDIR => exchange::exchange_ldir(self, mem),
             Instr::LDD => exchange::exchange_ldd(self, mem),
             Instr::LDDR => exchange::exchange_lddr(self, mem),
-            Instr::CPI => todo!(),
-            Instr::CPIR => todo!(),
-            Instr::CPD => todo!(),
-            Instr::CPDR => todo!(),
+            Instr::CPI => exchange::exchange_cpi(self, mem),
+            Instr::CPIR => exchange::exchange_cpir(self, mem),
+            Instr::CPD => exchange::exchange_cpd(self, mem),
+            Instr::CPDR => exchange::exchange_cpdr(self, mem),
         }
     }
 }
