@@ -135,6 +135,40 @@ impl Z80 {
         }
     }
 
+    /// Return whether the given status flag is set or not.
+    /// 
+    /// # Argument
+    /// - `f`: flag to check
+    pub fn flag(&self, f: Flag) -> bool {
+        (lower!(self.af) & (f as u16)) != 0
+    }
+
+    /// Set the value of the given status flag.
+    /// 
+    /// # Arguments
+    /// - `f`: flag to set
+    /// - `val`: value to set the flag to
+    /// 
+    /// # Examples
+    /// ```
+    /// # use spectrum::z80::{Z80, Flag};
+    /// # let mut z80: Z80 = Default::default();
+    /// z80.set_flag(Flag::N, true);
+    /// assert!(z80.flag(Flag::N)); 
+    /// z80.set_flag(Flag::N, false);
+    /// assert!(!z80.flag(Flag::N));
+    /// ```
+    pub fn set_flag(&mut self, f: Flag, val: bool) {
+        let mask = f as u16;
+        let old = lower!(self.af);
+        let new = if val {
+            old | mask
+        } else {
+            (old ^ mask) & !mask
+        };
+        set_lower!(self.af, new);
+    }
+
     /// Return a slice of memory beginning at the current program counter.
     /// 
     /// # Arguments
@@ -225,6 +259,17 @@ pub enum Register {
     H,
     L,
     HL,
+}
+
+/// Enums for identifying different status flags.
+#[derive(Clone, Copy, Debug)]
+pub enum Flag {
+    C = 0,
+    N = 1,
+    PV = 2,
+    H = 4,
+    Z = 6,
+    S = 7
 }
 
 mod decode;

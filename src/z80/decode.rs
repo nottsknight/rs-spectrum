@@ -1,7 +1,10 @@
 //! Provides methods for decoding instructions.
 mod load8;
+mod exchange;
+
 use super::{insts::Instr, Register, Z80};
 use load8::load8;
+use exchange::exchange;
 
 /// Returns a [`Register`] if the provided three-bit value maps to a register name.
 /// 
@@ -82,6 +85,6 @@ impl Z80 {
     /// # Arguments
     /// - `mem`: slice containing the instruction to decode
     pub fn decode(&self, mem: &[u8]) -> DecodeResult {
-        options!(load8(mem))
+        options!(load8(mem), exchange(mem))
     }
 }
