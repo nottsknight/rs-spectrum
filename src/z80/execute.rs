@@ -1,25 +1,45 @@
-use super::{Z80, insts::Instr};
-mod load8;
+use super::{insts::Instr, Z80};
+use crate::time_limit;
+use std::time::{Duration, Instant};
 mod exchange;
+mod load8;
 
 impl Z80 {
     /// Execute a single instruction.
-    /// 
+    ///
     /// # Arguments
     /// - `inst`: the instruction to execute
     /// - `mem`: slice representing the entire memory
     pub fn execute(&mut self, inst: Instr, mem: &mut [u8]) {
         match inst {
             // 8-bit load
-            Instr::LD_r_r(r, r1) => load8::load_r_r(self, r, r1),
-            Instr::LD_r_n(r, n) => load8::load_r_n(self, r, n),
-            Instr::LD_r_HL(r) => load8::load_r_hl(self, r, mem),
-            Instr::LD_r_IX(r, d) => load8::load_r_ix(self, r, d, mem),
-            Instr::LD_r_IY(r, d) => load8::load_r_iy(self, r, d, mem),
-            Instr::LD_HL_r(r) => load8::load_hl_r(self, r, mem),
-            Instr::LD_IX_r(d, r) => load8::load_ix_r(self, d, r, mem),
-            Instr::LD_IY_r(d, r) => load8::load_iy_r(self, d, r, mem),
-            Instr::LD_HL_n(n) => load8::load_hl_n(self, n, mem),
+            Instr::LD_r_r(r, r1) => {
+                time_limit!(load8::load_r_r(self, r, r1); Duration::from_nanos(1000))
+            }
+            Instr::LD_r_n(r, n) => {
+                time_limit!(load8::load_r_n(self, r, n); Duration::from_nanos(1750))
+            }
+            Instr::LD_r_HL(r) => {
+                time_limit!(load8::load_r_hl(self, r, mem); Duration::from_nanos(1750))
+            }
+            Instr::LD_r_IX(r, d) => {
+                time_limit!(load8::load_r_ix(self, r, d, mem); Duration::from_nanos(4750))
+            }
+            Instr::LD_r_IY(r, d) => {
+                time_limit!(load8::load_r_iy(self, r, d, mem); Duration::from_nanos(4750))
+            }
+            Instr::LD_HL_r(r) => {
+                time_limit!(load8::load_hl_r(self, r, mem); Duration::from_nanos(1750))
+            }
+            Instr::LD_IX_r(d, r) => {
+                time_limit!(load8::load_ix_r(self, d, r, mem); Duration::from_nanos(4750))
+            }
+            Instr::LD_IY_r(d, r) => {
+                time_limit!(load8::load_iy_r(self, d, r, mem); Duration::from_nanos(4750))
+            }
+            Instr::LD_HL_n(n) => {
+                time_limit!(load8::load_hl_n(self, n, mem); Duration::from_nanos(2500))
+            }
             Instr::LD_IX_n(d, n) => load8::load_ix_n(self, d, n, mem),
             Instr::LD_IY_n(d, n) => load8::load_iy_n(self, d, n, mem),
             Instr::LD_A_BC => load8::load_a_bc(self, mem),
