@@ -24,20 +24,28 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
     }
 }
 
-/// Try a sequence of provided `Option` expressions in order and return the first `Some`
-/// value it finds, or `None` if none of the expressions succeed.
+/// Try a sequence of provided [`Option`] expressions in order and return the first [`Some`]
+/// value it finds, or [`None`] if none of the expressions succeed.
 /// 
-/// # Arguments
-/// Any number of `Option` expressions, separated by commas.
-/// 
-/// # Example
+/// # Examples
 /// ```
 /// # #[macro_use(options)] extern crate spectrum;
 /// # fn main() {
-/// let x = options!(None::<u8>, None::<u8>, Some(2), Some(3));
-/// assert_eq!(Some(2), x);
+/// let x = options!(Some(1), None::<u8>);
+/// assert_eq!(Some(1), x);
+/// let y = options!(None::<u8>, None::<u8>, Some(2), Some(3));
+/// assert_eq!(Some(2), y);
 /// # }
 /// ```
+/// 
+/// The result can be `unwrapped`, which will panic in the normal way:
+/// ```
+/// # #[macro_use(options)] extern crate spectrum;
+/// # fn main() {
+/// let x = options!(Some(1), None::<u8>; unwrap);
+/// assert_eq!(1, x);
+/// # }
+/// 
 #[macro_export]
 macro_rules! options {
     ($opt:expr) => {
@@ -53,6 +61,10 @@ macro_rules! options {
             }
         }
     };
+
+    ($($opts:expr),+; unwrap) => {
+        options!($($opts),+).unwrap()
+    }
 }
 
 #[cfg(test)]
