@@ -83,8 +83,8 @@ impl Z80 {
     /// Attempts to decode an instruction that begins at the start of the provided slice.
     /// 
     /// # Arguments
-    /// - `mem`: slice containing the instruction to decode
-    pub fn decode(&self, mem: &[u8]) -> DecodeResult {
-        options!(load8(mem), exchange(mem))
+    /// - `memory`: slice containing the instruction to decode
+    pub fn decode(&self, memory: &[u8]) -> DecodeResult {
+        options!(load8(memory), exchange(memory))
     }
 }
