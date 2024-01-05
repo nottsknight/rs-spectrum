@@ -136,7 +136,7 @@ impl Z80 {
     }
 
     /// Return whether the given status flag is set or not.
-    /// 
+    ///
     /// # Argument
     /// - `f`: flag to check
     pub fn flag(&self, f: Flag) -> bool {
@@ -144,17 +144,17 @@ impl Z80 {
     }
 
     /// Set the value of the given status flag.
-    /// 
+    ///
     /// # Arguments
     /// - `f`: flag to set
     /// - `val`: value to set the flag to
-    /// 
+    ///
     /// # Examples
     /// ```
     /// # use spectrum::z80::{Z80, Flag};
     /// # let mut z80: Z80 = Default::default();
     /// z80.set_flag(Flag::N, true);
-    /// assert!(z80.flag(Flag::N)); 
+    /// assert!(z80.flag(Flag::N));
     /// z80.set_flag(Flag::N, false);
     /// assert!(!z80.flag(Flag::N));
     /// ```
@@ -170,19 +170,25 @@ impl Z80 {
     }
 
     /// Return a slice of memory beginning at the current program counter.
-    /// 
+    ///
     /// # Arguments
     /// - `memory`: slice representing the entire memory
     fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
         &memory[self.prog_counter as usize..]
     }
 
-    pub fn run(&mut self, mem: &mut [u8]) -> Option<()> {
+    /// Start the cpu running the fetch-decode-execute cycle.
+    /// 
+    /// This method loops infinitely unless an error occurs.
+    ///
+    /// # Arguments
+    /// - `memory`: slice of the entire memory available to the CPU
+    pub fn run(&mut self, memory: &mut [u8]) -> Option<()> {
         loop {
-            let m = self.fetch(mem);
+            let m = self.fetch(memory);
             let (inst, width) = self.decode(m)?;
             self.prog_counter += width as u16;
-            self.execute(inst, mem);
+            self.execute(inst, memory);
             thread::sleep(CLOCK_SPEED);
         }
     }
@@ -233,7 +239,7 @@ mod z80_tests {
         z80.set_reg(rname, val);
         assert_eq!(val, z80.reg(rname));
     }
-    
+
     #[rstest]
     fn test_fetch(mut z80: Z80) {
         z80.prog_counter = 2;
@@ -269,7 +275,7 @@ pub enum Flag {
     PV = 2,
     H = 4,
     Z = 6,
-    S = 7
+    S = 7,
 }
 
 mod decode;
