@@ -1,13 +1,15 @@
 //! Provides methods for decoding instructions.
-mod load8;
 mod exchange;
+mod jump;
+mod load8;
 
-use super::{insts::Instr, Register, Z80};
-use load8::load8;
+use super::{insts::Instr, Condition, Register, Z80};
 use exchange::exchange;
+use jump::jump;
+use load8::load8;
 
 /// Returns a [`Register`] if the provided three-bit value maps to a register name.
-/// 
+///
 /// # Arguments
 /// - `bits`: the bits to convert
 #[inline]
@@ -24,9 +26,24 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
     }
 }
 
+#[inline]
+fn bits_to_condition(bits: u8) -> Option<Condition> {
+    match bits {
+        0b000 => Some(Condition::NZ),
+        0b001 => Some(Condition::Z),
+        0b010 => Some(Condition::NC),
+        0b011 => Some(Condition::C),
+        0b100 => Some(Condition::PO),
+        0b101 => Some(Condition::PE),
+        0b110 => Some(Condition::P),
+        0b111 => Some(Condition::M),
+        _ => None,
+    }
+}
+
 /// Try a sequence of provided [`Option`] expressions in order and return the first [`Some`]
 /// value it finds, or [`None`] if none of the expressions succeed.
-/// 
+///
 /// # Examples
 /// ```
 /// # #[macro_use(options)] extern crate spectrum;
@@ -37,7 +54,7 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
 /// assert_eq!(Some(2), y);
 /// # }
 /// ```
-/// 
+///
 /// The result can be `unwrapped`, which will panic in the normal way:
 /// ```
 /// # #[macro_use(options)] extern crate spectrum;
@@ -45,7 +62,7 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
 /// let x = options!(Some(1), None::<u8>; unwrap);
 /// assert_eq!(1, x);
 /// # }
-/// 
+///
 #[macro_export]
 macro_rules! options {
     ($opt:expr) => {
@@ -93,10 +110,10 @@ const LOW_THREE: u8 = 0b00000111;
 
 impl Z80 {
     /// Attempts to decode an instruction that begins at the start of the provided slice.
-    /// 
+    ///
     /// # Arguments
     /// - `memory`: slice containing the instruction to decode
     pub fn decode(&self, memory: &[u8]) -> DecodeResult {
-        options!(load8(memory), exchange(memory))
+        options!(load8(memory), exchange(memory), jump(memory))
     }
 }

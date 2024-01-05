@@ -266,6 +266,27 @@ pub enum Flag {
     S = 7,
 }
 
+/// Enums for identifying different jump conditions.
+#[derive(Clone, Copy, Debug)]
+pub enum Condition {
+    /// Non-zeo
+    NZ,
+    /// Zero
+    Z,
+    /// No carry
+    NC,
+    /// Carry
+    C,
+    /// Parity odd
+    PO,
+    /// Parity even
+    PE,
+    /// Sign positive
+    P,
+    /// Sign negative
+    M
+}
+
 mod decode;
 mod execute;
 mod insts;

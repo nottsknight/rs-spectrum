@@ -126,6 +126,7 @@ impl Z80 {
                     time_limit!(exchange::exchange_cpdr(self, memory); Duration::from_nanos(4000))
                 }
             }
+            _ => todo!("Implement jump instructions"),
         }
     }
 }
