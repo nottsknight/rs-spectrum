@@ -43,5 +43,24 @@ pub enum Instr {
     CPI,
     CPIR,
     CPD,
-    CPDR
+    CPDR,
+    // 8-bit Arithmetic
+    // TODO: Implement method of representing 's' param
+    ADD_A_r(Register),
+    ADD_A_n(u8),
+    ADD_A_HL,
+    ADD_A_IX(i8),
+    ADD_A_IY(i8),
+    ADC_A_s,
+    SUB_s,
+    SBC_A_s,
+    AND_s,
+    OR_s,
+    XOR_s,
+    CP_s,
+    INC_r(Register),
+    INC_HL,
+    INC_IX(i8),
+    INC_IY(i8),
+    DEC_m
 }

@@ -1,13 +1,14 @@
 //! Provides methods for decoding instructions.
-mod load8;
+mod arith8;
 mod exchange;
+mod load8;
 
 use super::{insts::Instr, Register, Z80};
-use load8::load8;
 use exchange::exchange;
+use load8::load8;
 
 /// Returns a [`Register`] if the provided three-bit value maps to a register name.
-/// 
+///
 /// # Arguments
 /// - `bits`: the bits to convert
 #[inline]
@@ -26,10 +27,10 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
 
 /// Try a sequence of provided `Option` expressions in order and return the first `Some`
 /// value it finds, or `None` if none of the expressions succeed.
-/// 
+///
 /// # Arguments
 /// Any number of `Option` expressions, separated by commas.
-/// 
+///
 /// # Example
 /// ```
 /// # #[macro_use(options)] extern crate spectrum;
@@ -81,7 +82,7 @@ const LOW_THREE: u8 = 0b00000111;
 
 impl Z80 {
     /// Attempts to decode an instruction that begins at the start of the provided slice.
-    /// 
+    ///
     /// # Arguments
     /// - `memory`: slice containing the instruction to decode
     pub fn decode(&self, memory: &[u8]) -> DecodeResult {

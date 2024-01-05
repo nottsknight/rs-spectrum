@@ -1,6 +1,7 @@
 use super::{insts::Instr, Z80};
 use crate::time_limit;
 use std::time::{Duration, Instant};
+mod arith8;
 mod exchange;
 mod load8;
 
@@ -126,6 +127,7 @@ impl Z80 {
                     time_limit!(exchange::exchange_cpdr(self, memory); Duration::from_nanos(4000))
                 }
             }
+            _ => todo!("Implement arith8 instructions"),
         }
     }
 }
