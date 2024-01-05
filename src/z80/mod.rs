@@ -50,19 +50,33 @@ macro_rules! lower {
 
 #[derive(Default)]
 pub struct Z80 {
+    /// Main AF register pair
     pub af: u16,
+    /// Alternate AF register pair
     pub af1: u16,
+    /// Main BC register pair
     pub bc: u16,
+    /// Alternate BC register pair
     pub bc1: u16,
+    /// Main DE register pair
     pub de: u16,
+    /// Alternate DE register pair
     pub de1: u16,
+    /// Main HL register pair
     pub hl: u16,
+    /// Alternate HL register pair
     pub hl1: u16,
+    /// Index register X
     pub index_x: u16,
+    /// Index register Y
     pub index_y: u16,
+    /// Stack pointer
     pub stack_ptr: u16,
+    /// Interrupt vector
     pub interrupt: u8,
+    /// Memory refresh
     pub refresh: u8,
+    /// Program counter
     pub prog_counter: u16,
 }
 
@@ -242,34 +256,51 @@ mod z80_tests {
 /// Enums for identifying specific registers in other methods.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Register {
+    /// Accumulator register
     A,
+    /// Flag register
     F,
+    /// B register
     B,
+    /// C register
     C,
+    /// BC register pair
     BC,
+    /// D register
     D,
+    /// E register
     E,
+    /// DE register pair
     DE,
+    /// H register
     H,
+    /// L register
     L,
+    /// HL register pair
     HL,
 }
 
 /// Enums for identifying different status flags.
 #[derive(Clone, Copy, Debug)]
 pub enum Flag {
+    /// Carry flag
     C = 0,
+    /// Add/subtract flag
     N = 1,
+    /// Parity/overflow flag
     PV = 2,
+    /// Half-carry flag
     H = 4,
+    /// Zero flag
     Z = 6,
+    /// Sign flag
     S = 7,
 }
 
 /// Enums for identifying different jump conditions.
 #[derive(Clone, Copy, Debug)]
 pub enum Condition {
-    /// Non-zeo
+    /// Non-zero
     NZ,
     /// Zero
     Z,
