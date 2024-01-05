@@ -40,18 +40,27 @@ impl Z80 {
             Instr::LD_HL_n(n) => {
                 time_limit!(load8::load_hl_n(self, n, mem); Duration::from_nanos(2500))
             }
-            Instr::LD_IX_n(d, n) => load8::load_ix_n(self, d, n, mem),
-            Instr::LD_IY_n(d, n) => load8::load_iy_n(self, d, n, mem),
-            Instr::LD_A_BC => load8::load_a_bc(self, mem),
-            Instr::LD_A_DE => load8::load_a_de(self, mem),
-            Instr::LD_A_nn(nn) => load8::load_a_nn(self, nn, mem),
-            Instr::LD_BC_A => load8::load_bc_a(self, mem),
-            Instr::LD_DE_A => load8::load_de_a(self, mem),
-            Instr::LD_nn_A(nn) => load8::load_nn_a(self, nn, mem),
-            Instr::LD_A_I => load8::load_a_i(self),
-            Instr::LD_A_R => load8::load_a_r(self),
-            Instr::LD_I_A => load8::load_i_a(self),
-            Instr::LD_R_A => load8::load_r_a(self),
+            Instr::LD_IX_n(d, n) => time_limit!(
+                load8::load_ix_n(self, d, n, mem);
+                Duration::from_nanos(4750)
+            ),
+            Instr::LD_IY_n(d, n) => {
+                time_limit!(load8::load_iy_n(self, d, n, mem); Duration::from_nanos(2500))
+            }
+            Instr::LD_A_BC => time_limit!(load8::load_a_bc(self, mem); Duration::from_nanos(1750)),
+            Instr::LD_A_DE => time_limit!(load8::load_a_de(self, mem); Duration::from_nanos(1750)),
+            Instr::LD_A_nn(nn) => {
+                time_limit!(load8::load_a_nn(self, nn, mem); Duration::from_nanos(3250))
+            }
+            Instr::LD_BC_A => time_limit!(load8::load_bc_a(self, mem); Duration::from_nanos(1750)),
+            Instr::LD_DE_A => time_limit!(load8::load_de_a(self, mem); Duration::from_nanos(1750)),
+            Instr::LD_nn_A(nn) => {
+                time_limit!(load8::load_nn_a(self, nn, mem); Duration::from_nanos(3250))
+            }
+            Instr::LD_A_I => time_limit!(load8::load_a_i(self); Duration::from_nanos(2250)),
+            Instr::LD_A_R => time_limit!(load8::load_a_r(self); Duration::from_nanos(2250)),
+            Instr::LD_I_A => time_limit!(load8::load_i_a(self); Duration::from_nanos(2250)),
+            Instr::LD_R_A => time_limit!(load8::load_r_a(self); Duration::from_nanos(2250)),
             // Exchange, Swap, Search
             Instr::EX_DE_HL => exchange::exchange_de_hl(self),
             Instr::EX_AF_AF1 => exchange::exchange_af_af1(self),
