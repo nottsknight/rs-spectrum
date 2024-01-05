@@ -4,7 +4,7 @@ use super::Register;
 /// A single Z80 instruction with its arguments.
 /// 
 /// Instructions implement `Copy` so there is no need to worry about passing references.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[allow(non_camel_case_types)]
 pub enum Instr {
     // 8-Bit Load
