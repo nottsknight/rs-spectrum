@@ -48,6 +48,7 @@ macro_rules! lower {
     };
 }
 
+/// Emulated Z80 CPU
 #[derive(Default)]
 pub struct Z80 {
     /// Main AF register pair
@@ -175,7 +176,7 @@ impl Z80 {
     ///
     /// # Arguments
     /// - `memory`: slice representing the entire memory
-    fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
+    pub fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
         &memory[self.prog_counter as usize..]
     }
 
