@@ -4,6 +4,7 @@ mod exchange;
 mod load8;
 
 use super::{insts::Instr, Register, Z80};
+use arith8::arith8;
 use exchange::exchange;
 use load8::load8;
 
@@ -86,6 +87,6 @@ impl Z80 {
     /// # Arguments
     /// - `memory`: slice containing the instruction to decode
     pub fn decode(&self, memory: &[u8]) -> DecodeResult {
-        options!(load8(memory), exchange(memory))
+        options!(load8(memory), exchange(memory), arith8(memory))
     }
 }
