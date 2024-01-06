@@ -1,11 +1,13 @@
 //! Provides methods for decoding instructions.
 mod arith8;
 mod exchange;
+mod jump;
 mod load8;
 
-use super::{insts::Instr, Register, Z80};
+use super::{insts::Instr, Condition, Register, Z80};
 use arith8::arith8;
 use exchange::exchange;
+use jump::jump;
 use load8::load8;
 
 /// Returns a [`Register`] if the provided three-bit value maps to a register name.
@@ -26,20 +28,43 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
     }
 }
 
-/// Try a sequence of provided `Option` expressions in order and return the first `Some`
-/// value it finds, or `None` if none of the expressions succeed.
+#[inline]
+fn bits_to_condition(bits: u8) -> Option<Condition> {
+    match bits {
+        0b000 => Some(Condition::NZ),
+        0b001 => Some(Condition::Z),
+        0b010 => Some(Condition::NC),
+        0b011 => Some(Condition::C),
+        0b100 => Some(Condition::PO),
+        0b101 => Some(Condition::PE),
+        0b110 => Some(Condition::P),
+        0b111 => Some(Condition::M),
+        _ => None,
+    }
+}
+
+/// Try a sequence of provided [`Option`] expressions in order and return the first [`Some`]
+/// value it finds, or [`None`] if none of the expressions succeed.
 ///
-/// # Arguments
-/// Any number of `Option` expressions, separated by commas.
-///
-/// # Example
+/// # Examples
 /// ```
 /// # #[macro_use(options)] extern crate spectrum;
 /// # fn main() {
-/// let x = options!(None::<u8>, None::<u8>, Some(2), Some(3));
-/// assert_eq!(Some(2), x);
+/// let x = options!(Some(1), None::<u8>);
+/// assert_eq!(Some(1), x);
+/// let y = options!(None::<u8>, None::<u8>, Some(2), Some(3));
+/// assert_eq!(Some(2), y);
 /// # }
 /// ```
+///
+/// The result can be `unwrapped`, which will panic in the normal way:
+/// ```
+/// # #[macro_use(options)] extern crate spectrum;
+/// # fn main() {
+/// let x = options!(Some(1), None::<u8>; unwrap);
+/// assert_eq!(1, x);
+/// # }
+///
 #[macro_export]
 macro_rules! options {
     ($opt:expr) => {
@@ -55,6 +80,10 @@ macro_rules! options {
             }
         }
     };
+
+    ($($opts:expr),+; unwrap) => {
+        options!($($opts),+).unwrap()
+    }
 }
 
 #[cfg(test)]
@@ -87,6 +116,6 @@ impl Z80 {
     /// # Arguments
     /// - `memory`: slice containing the instruction to decode
     pub fn decode(&self, memory: &[u8]) -> DecodeResult {
-        options!(load8(memory), exchange(memory), arith8(memory))
+        options!(load8(memory), exchange(memory), arith8(memory), jump(memory))
     }
 }

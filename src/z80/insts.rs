@@ -1,5 +1,5 @@
 //! Defines constants for representing Z80 instructions with their arguments.
-use super::Register;
+use super::{Register, Condition};
 
 /// A single Z80 instruction with its arguments.
 /// 
@@ -66,5 +66,17 @@ pub enum Instr {
     INC_HL,
     INC_IX(i8),
     INC_IY(i8),
-    DEC_m
+    DEC_m,
+    // Jump
+    JP_nn(u16),
+    JP_cc_nn(Condition, u16),
+    JR_e(i8),
+    JR_C_e(i8),
+    JR_NC_e(i8),
+    JR_Z_e(i8),
+    JR_NZ_e(i8),
+    JP_HL,
+    JP_IX,
+    JP_IY,
+    DJNZ_e(i8)
 }

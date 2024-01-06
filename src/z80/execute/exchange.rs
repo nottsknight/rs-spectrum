@@ -1,5 +1,5 @@
 use crate::z80::{Flag, Register, Z80};
-use crate::{set_lower, set_upper};
+use crate::{lower, upper};
 use std::mem::swap;
 
 #[inline]
@@ -30,17 +30,17 @@ pub fn exchange_sp_hl(cpu: &mut Z80, mem: &[u8]) {
 #[inline]
 pub fn exchange_sp_ix(cpu: &mut Z80, mem: &[u8]) {
     let lo = mem[cpu.stack_ptr as usize];
-    set_lower!(cpu.index_x, lo as u16);
+    lower!(set cpu.index_x; lo as u16);
     let hi = mem[(cpu.stack_ptr + 1) as usize];
-    set_upper!(cpu.index_x, hi as u16);
+    upper!(set cpu.index_x; hi as u16);
 }
 
 #[inline]
 pub fn exchange_sp_iy(cpu: &mut Z80, mem: &[u8]) {
     let lo = mem[cpu.stack_ptr as usize];
-    set_lower!(cpu.index_y, lo as u16);
+    lower!(set cpu.index_y; lo as u16);
     let hi = mem[(cpu.stack_ptr + 1) as usize];
-    set_upper!(cpu.index_y, hi as u16);
+    upper!(set cpu.index_y; hi as u16);
 }
 
 #[inline]

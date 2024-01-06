@@ -3,78 +3,81 @@ use std::{thread, time};
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
+/// Get or set the upper 8 bits of a 16-bit value.
+/// 
+/// # Examples
+/// ```
+/// # #[macro_use] extern crate spectrum;
+/// # fn main() {
+/// let mut x = 0xabcd;
+/// assert_eq!(0xab, upper!(get x));
+/// upper!(set x; 0xef);
+/// assert_eq!(0xef, upper!(get x)); 
+/// # }
+/// ```
 #[macro_export]
 macro_rules! upper {
-    ($x:expr) => {
+    (get $x:expr) => {
         ($x & 0xff00) >> 8
     };
+
+    (set $x:expr; $y:expr) => {
+        $x = ($x & 0x00ff) | (($y & 0x00ff) << 8)
+    }
 }
 
-#[macro_export]
-macro_rules! set_upper {
-    ($x:expr, $n:expr) => {
-        $x = ($x & 0x00ff) | (($n & 0x00ff) << 8)
-    };
-}
-
+/// Get or set the lower 8 bits of a 16-bit value.
+/// 
+/// # Examples
+/// ```
+/// # #[macro_use] extern crate spectrum;
+/// # fn main() {
+/// let mut x = 0xabcd;
+/// assert_eq!(0xcd, lower!(get x));
+/// lower!(set x; 0xef);
+/// assert_eq!(0xef, lower!(get x)); 
+/// # }
 #[macro_export]
 macro_rules! lower {
-    ($x:expr) => {
+    (get $x:expr) => {
         $x & 0x00ff
     };
-}
 
-#[macro_export]
-macro_rules! set_lower {
-    ($x:expr, $n:expr) => {
-        $x = ($x & 0xff00) | ($n & 0x00ff)
+    (set $x:expr; $y:expr) => {
+        $x = ($x & 0xff00) | ($y & 0x00ff)
     };
 }
 
-#[cfg(test)]
-mod upper_lower_tests {
-    use rstest::*;
-
-    #[rstest]
-    pub fn test_upper() {
-        assert_eq!(0xab, upper!(0xabcd));
-    }
-
-    #[rstest]
-    pub fn test_set_upper() {
-        let mut n = 0xabcd;
-        set_upper!(n, 0x12);
-        assert_eq!(0x12cd, n);
-    }
-
-    #[rstest]
-    pub fn test_lower() {
-        assert_eq!(0xcd, lower!(0xabcd));
-    }
-
-    #[rstest]
-    pub fn test_set_lower() {
-        let mut n = 0xabcd;
-        set_lower!(n, 0x01);
-        assert_eq!(n, 0xab01);
-    }
-}
-
+/// Emulated Z80 CPU
 #[derive(Default)]
 pub struct Z80 {
+    /// Main AF register pair
     pub af: u16,
+    /// Alternate AF register pair
     pub af1: u16,
+    /// Main BC register pair
     pub bc: u16,
+    /// Alternate BC register pair
     pub bc1: u16,
+    /// Main DE register pair
     pub de: u16,
+    /// Alternate DE register pair
     pub de1: u16,
+    /// Main HL register pair
     pub hl: u16,
+    /// Alternate HL register pair
     pub hl1: u16,
+    /// Index register X
     pub index_x: u16,
+    /// Index register Y
     pub index_y: u16,
+    /// Stack pointer
     pub stack_ptr: u16,
+    /// Interrupt vector
     pub interrupt: u8,
+    /// Memory refresh
     pub refresh: u8,
+    /// Program counter
     pub prog_counter: u16,
 }
 
@@ -88,16 +91,16 @@ impl Z80 {
     /// - `reg`: register to get
     pub fn reg(&self, reg: Register) -> u16 {
         match reg {
-            Register::A => upper!(self.af),
-            Register::F => lower!(self.af),
-            Register::B => upper!(self.bc),
-            Register::C => lower!(self.bc),
+            Register::A => upper!(get self.af),
+            Register::F => lower!(get self.af),
+            Register::B => upper!(get self.bc),
+            Register::C => lower!(get self.bc),
             Register::BC => self.bc,
-            Register::D => upper!(self.de),
-            Register::E => lower!(self.de),
+            Register::D => upper!(get self.de),
+            Register::E => lower!(get self.de),
             Register::DE => self.de,
-            Register::H => upper!(self.hl),
-            Register::L => lower!(self.hl),
+            Register::H => upper!(get self.hl),
+            Register::L => lower!(get self.hl),
             Register::HL => self.hl,
         }
     }
@@ -121,16 +124,16 @@ impl Z80 {
     /// ```
     pub fn set_reg(&mut self, reg: Register, val: u16) {
         match reg {
-            Register::A => set_upper!(self.af, val),
-            Register::F => set_lower!(self.af, val),
-            Register::B => set_upper!(self.bc, val),
-            Register::C => set_lower!(self.bc, val),
+            Register::A => upper!(set self.af; val),
+            Register::F => lower!(set self.af; val),
+            Register::B => upper!(set self.bc; val),
+            Register::C => lower!(set self.bc; val),
             Register::BC => self.bc = val,
-            Register::D => set_upper!(self.de, val),
-            Register::E => set_lower!(self.de, val),
+            Register::D => upper!(set self.de; val),
+            Register::E => lower!(set self.de; val),
             Register::DE => self.de = val,
-            Register::H => set_upper!(self.hl, val),
-            Register::L => set_lower!(self.hl, val),
+            Register::H => upper!(set self.hl; val),
+            Register::L => lower!(set self.hl; val),
             Register::HL => self.hl = val,
         }
     }
@@ -140,7 +143,7 @@ impl Z80 {
     /// # Argument
     /// - `f`: flag to check
     pub fn flag(&self, f: Flag) -> bool {
-        (lower!(self.af) & (f as u16)) != 0
+        (lower!(get self.af) & (f as u16)) != 0
     }
 
     /// Set the value of the given status flag.
@@ -160,20 +163,20 @@ impl Z80 {
     /// ```
     pub fn set_flag(&mut self, f: Flag, val: bool) {
         let mask = f as u16;
-        let old = lower!(self.af);
+        let old = lower!(get self.af);
         let new = if val {
             old | mask
         } else {
             (old ^ mask) & !mask
         };
-        set_lower!(self.af, new);
+        lower!(set self.af; new);
     }
 
     /// Return a slice of memory beginning at the current program counter.
     ///
     /// # Arguments
     /// - `memory`: slice representing the entire memory
-    fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
+    pub fn fetch<'a>(&self, memory: &'a [u8]) -> &'a [u8] {
         &memory[self.prog_counter as usize..]
     }
 
@@ -254,28 +257,66 @@ mod z80_tests {
 /// Enums for identifying specific registers in other methods.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Register {
+    /// Accumulator register
     A,
+    /// Flag register
     F,
+    /// B register
     B,
+    /// C register
     C,
+    /// BC register pair
     BC,
+    /// D register
     D,
+    /// E register
     E,
+    /// DE register pair
     DE,
+    /// H register
     H,
+    /// L register
     L,
+    /// HL register pair
     HL,
 }
 
 /// Enums for identifying different status flags.
 #[derive(Clone, Copy, Debug)]
 pub enum Flag {
+    /// Carry flag
     C = 0,
+    /// Add/subtract flag
     N = 1,
+    /// Parity/overflow flag
     PV = 2,
+    /// Half-carry flag
     H = 4,
+    /// Zero flag
     Z = 6,
+    /// Sign flag
     S = 7,
+}
+
+/// Enums for identifying different jump conditions.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Condition {
+    /// Non-zero
+    NZ,
+    /// Zero
+    Z,
+    /// No carry
+    NC,
+    /// Carry
+    C,
+    /// Parity odd
+    PO,
+    /// Parity even
+    PE,
+    /// Sign positive
+    P,
+    /// Sign negative
+    M
 }
 
 mod decode;
