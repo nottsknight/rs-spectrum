@@ -192,8 +192,11 @@ impl Z80 {
             Instr::JP_IX => min_time!(jump::jump_ix(self); Duration::from_nanos(1000)),
             Instr::JP_IY => min_time!(jump::jump_iy(self); Duration::from_nanos(1000)),
             Instr::DJNZ_e(e) => min_time!(jump::djnz_e(self, e); Duration::from_nanos(3250)),
+            // 8-bit Arithmetic
             Instr::ADD_A_r(r) => min_time!(arith8::add_a_r(self, r); Duration::from_nanos(1000)),
-            _ => todo!("Implement arith8 execution")
+            Instr::INC_r(r) => min_time!(arith8::inc_r(self, r); Duration::from_nanos(1000)),
+            Instr::INC_HL => min_time!(arith8::inc_hl(self, memory); Duration::from_nanos(2750)),
+            _ => todo!("Implement arith8 execution"),
         }
     }
 }
