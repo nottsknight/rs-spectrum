@@ -1,3 +1,4 @@
+pub mod hi_lo;
 pub mod z80;
 use z80::Z80;
 

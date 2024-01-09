@@ -1,52 +1,9 @@
 //! This module defines values for emulating the Zilog Z80 CPU.
 use std::{thread, time};
 
+use crate::hi_lo::HiLo;
+
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
-
-/// Get or set the upper 8 bits of a 16-bit value.
-/// 
-/// # Examples
-/// ```
-/// # #[macro_use] extern crate spectrum;
-/// # fn main() {
-/// let mut x = 0xabcd;
-/// assert_eq!(0xab, upper!(get x));
-/// upper!(set x; 0xef);
-/// assert_eq!(0xef, upper!(get x)); 
-/// # }
-/// ```
-#[macro_export]
-macro_rules! upper {
-    (get $x:expr) => {
-        ($x & 0xff00) >> 8
-    };
-
-    (set $x:expr; $y:expr) => {
-        $x = ($x & 0x00ff) | (($y & 0x00ff) << 8)
-    }
-}
-
-/// Get or set the lower 8 bits of a 16-bit value.
-/// 
-/// # Examples
-/// ```
-/// # #[macro_use] extern crate spectrum;
-/// # fn main() {
-/// let mut x = 0xabcd;
-/// assert_eq!(0xcd, lower!(get x));
-/// lower!(set x; 0xef);
-/// assert_eq!(0xef, lower!(get x)); 
-/// # }
-#[macro_export]
-macro_rules! lower {
-    (get $x:expr) => {
-        $x & 0x00ff
-    };
-
-    (set $x:expr; $y:expr) => {
-        $x = ($x & 0xff00) | ($y & 0x00ff)
-    };
-}
 
 /// Emulated Z80 CPU
 #[derive(Default)]
@@ -91,16 +48,16 @@ impl Z80 {
     /// - `reg`: register to get
     pub fn reg(&self, reg: Register) -> u16 {
         match reg {
-            Register::A => upper!(get self.af),
-            Register::F => lower!(get self.af),
-            Register::B => upper!(get self.bc),
-            Register::C => lower!(get self.bc),
+            Register::A => self.af.hi() as u16,
+            Register::F => self.af.lo() as u16,
+            Register::B => self.bc.hi() as u16,
+            Register::C => self.bc.lo() as u16,
             Register::BC => self.bc,
-            Register::D => upper!(get self.de),
-            Register::E => lower!(get self.de),
+            Register::D => self.de.hi() as u16,
+            Register::E => self.de.lo() as u16,
             Register::DE => self.de,
-            Register::H => upper!(get self.hl),
-            Register::L => lower!(get self.hl),
+            Register::H => self.hl.hi() as u16,
+            Register::L => self.hl.lo() as u16,
             Register::HL => self.hl,
         }
     }
@@ -124,16 +81,16 @@ impl Z80 {
     /// ```
     pub fn set_reg(&mut self, reg: Register, val: u16) {
         match reg {
-            Register::A => upper!(set self.af; val),
-            Register::F => lower!(set self.af; val),
-            Register::B => upper!(set self.bc; val),
-            Register::C => lower!(set self.bc; val),
+            Register::A => self.af.set_hi(val as u8),
+            Register::F => self.af.set_lo(val as u8),
+            Register::B => self.bc.set_hi(val as u8),
+            Register::C => self.bc.set_lo(val as u8),
             Register::BC => self.bc = val,
-            Register::D => upper!(set self.de; val),
-            Register::E => lower!(set self.de; val),
+            Register::D => self.de.set_hi(val as u8),
+            Register::E => self.de.set_lo(val as u8),
             Register::DE => self.de = val,
-            Register::H => upper!(set self.hl; val),
-            Register::L => lower!(set self.hl; val),
+            Register::H => self.hl.set_hi(val as u8),
+            Register::L => self.hl.set_lo(val as u8),
             Register::HL => self.hl = val,
         }
     }
@@ -143,7 +100,7 @@ impl Z80 {
     /// # Argument
     /// - `f`: flag to check
     pub fn flag(&self, f: Flag) -> bool {
-        (lower!(get self.af) & (f as u16)) != 0
+        self.af.lo() & (f as u8) != 0
     }
 
     /// Set the value of the given status flag.
@@ -162,14 +119,14 @@ impl Z80 {
     /// assert!(!z80.flag(Flag::N));
     /// ```
     pub fn set_flag(&mut self, f: Flag, val: bool) {
-        let mask = f as u16;
-        let old = lower!(get self.af);
+        let mask = f as u8;
+        let old = self.af.lo();
         let new = if val {
             old | mask
         } else {
             (old ^ mask) & !mask
         };
-        lower!(set self.af; new);
+        self.af.set_lo(new);
     }
 
     /// Return a slice of memory beginning at the current program counter.
@@ -181,7 +138,7 @@ impl Z80 {
     }
 
     /// Start the cpu running the fetch-decode-execute cycle.
-    /// 
+    ///
     /// This method loops infinitely unless an error occurs.
     ///
     /// # Arguments
@@ -316,7 +273,7 @@ pub enum Condition {
     /// Sign positive
     P,
     /// Sign negative
-    M
+    M,
 }
 
 mod decode;
