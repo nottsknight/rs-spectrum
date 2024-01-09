@@ -11,7 +11,7 @@ const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4
 /// # fn main() {
 /// let mut x = 0xabcd;
 /// assert_eq!(0xab, upper!(get x));
-/// upper!(set x; 0xef);
+/// upper!(set x => 0xef);
 /// assert_eq!(0xef, upper!(get x)); 
 /// # }
 /// ```
@@ -21,7 +21,7 @@ macro_rules! upper {
         ($x & 0xff00) >> 8
     };
 
-    (set $x:expr; $y:expr) => {
+    (set $x:expr => $y:expr) => {
         $x = ($x & 0x00ff) | (($y & 0x00ff) << 8)
     }
 }
@@ -34,7 +34,7 @@ macro_rules! upper {
 /// # fn main() {
 /// let mut x = 0xabcd;
 /// assert_eq!(0xcd, lower!(get x));
-/// lower!(set x; 0xef);
+/// lower!(set x => 0xef);
 /// assert_eq!(0xef, lower!(get x)); 
 /// # }
 #[macro_export]
@@ -43,7 +43,7 @@ macro_rules! lower {
         $x & 0x00ff
     };
 
-    (set $x:expr; $y:expr) => {
+    (set $x:expr => $y:expr) => {
         $x = ($x & 0xff00) | ($y & 0x00ff)
     };
 }
@@ -124,16 +124,16 @@ impl Z80 {
     /// ```
     pub fn set_reg(&mut self, reg: Register, val: u16) {
         match reg {
-            Register::A => upper!(set self.af; val),
-            Register::F => lower!(set self.af; val),
-            Register::B => upper!(set self.bc; val),
-            Register::C => lower!(set self.bc; val),
+            Register::A => upper!(set self.af => val),
+            Register::F => lower!(set self.af => val),
+            Register::B => upper!(set self.bc => val),
+            Register::C => lower!(set self.bc => val),
             Register::BC => self.bc = val,
-            Register::D => upper!(set self.de; val),
-            Register::E => lower!(set self.de; val),
+            Register::D => upper!(set self.de => val),
+            Register::E => lower!(set self.de => val),
             Register::DE => self.de = val,
-            Register::H => upper!(set self.hl; val),
-            Register::L => lower!(set self.hl; val),
+            Register::H => upper!(set self.hl => val),
+            Register::L => lower!(set self.hl => val),
             Register::HL => self.hl = val,
         }
     }
@@ -169,7 +169,7 @@ impl Z80 {
         } else {
             (old ^ mask) & !mask
         };
-        lower!(set self.af; new);
+        lower!(set self.af => new);
     }
 
     /// Return a slice of memory beginning at the current program counter.
