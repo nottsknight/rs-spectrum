@@ -1,6 +1,7 @@
 //! Functions for decoding 8-bit load instructions.
 use super::{bits_to_reg, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
 use crate::options;
+use byteorder::{ByteOrder, LE};
 
 /// Attempt to decode an 8-bit load instruction from the provided memory slice.
 ///
@@ -15,14 +16,14 @@ pub fn load8(mem: &[u8]) -> DecodeResult {
         [0x36, n, ..] => Some((Instr::LD_HL_n(*n), 2)),
         [0x0a, ..] => Some((Instr::LD_A_BC, 1)),
         [0x1a, ..] => Some((Instr::LD_A_DE, 1)),
-        [0x3a, hi, lo, ..] => {
-            let nn = ((*hi as u16) << 8) | *lo as u16;
+        [0x3a, rest @ ..] => {
+            let nn = LE::read_u16(rest);
             Some((Instr::LD_A_nn(nn), 3))
         }
         [0x02, ..] => Some((Instr::LD_BC_A, 1)),
         [0x12, ..] => Some((Instr::LD_DE_A, 1)),
-        [0x32, hi, lo, ..] => {
-            let nn = ((*hi as u16) << 8) | *lo as u16;
+        [0x32, rest @ ..] => {
+            let nn = LE::read_u16(rest);
             Some((Instr::LD_nn_A(nn), 3))
         }
         [0xed, x, ..] => match *x {
@@ -129,10 +130,10 @@ mod load8_tests {
     #[case::ld_iy_n(vec![0xfd, 0x36, 0xca, 0x1f], Instr::LD_IY_n(-54, 0x1f), 4)]
     #[case::ld_a_bc(vec![0x0a], Instr::LD_A_BC, 1)]
     #[case::ld_a_de(vec![0x1a], Instr::LD_A_DE, 1)]
-    #[case::ld_a_nn(vec![0x3a, 0x24, 0xa1], Instr::LD_A_nn(0x24a1), 3)]
+    #[case::ld_a_nn(vec![0x3a, 0x24, 0xa1], Instr::LD_A_nn(0xa124), 3)]
     #[case::ld_bc_a(vec![0x02], Instr::LD_BC_A, 1)]
     #[case::ld_de_a(vec![0x12], Instr::LD_DE_A, 1)]
-    #[case::ld_nn_a(vec![0x32, 0xfa, 0xce], Instr::LD_nn_A(0xface), 3)]
+    #[case::ld_nn_a(vec![0x32, 0xfa, 0xce], Instr::LD_nn_A(0xcefa), 3)]
     #[case::ld_a_i(vec![0xed, 0x57], Instr::LD_A_I, 2)]
     #[case::ld_a_r(vec![0xed, 0x5f], Instr::LD_A_R, 2)]
     #[case::ld_i_a(vec![0xed, 0x47], Instr::LD_I_A, 2)]

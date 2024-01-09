@@ -1,13 +1,14 @@
 use super::{bits_to_condition, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
+use byteorder::{ByteOrder, LE};
 
 /// Attempt to decode a Jump instruction.
-/// 
+///
 /// # Arguments
 /// - `memory`: slice of memory with first byte of instruction at index 0
 pub fn jump(memory: &[u8]) -> DecodeResult {
     match memory {
-        [0xc3, lo, hi, ..] => {
-            let nn = ((*hi as u16) << 8) | *lo as u16;
+        [0xc3, rest @ ..] => {
+            let nn = LE::read_u16(rest);
             Some((Instr::JP_nn(nn), 3))
         }
         [0x18, e, ..] => Some((Instr::JR_e((*e as i8) + 2), 2)),
