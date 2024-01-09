@@ -5,51 +5,6 @@ use crate::hi_lo::HiLo;
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
-/// Get or set the upper 8 bits of a 16-bit value.
-///
-/// # Examples
-/// ```
-/// # #[macro_use] extern crate spectrum;
-/// # fn main() {
-/// let mut x = 0xabcd;
-/// assert_eq!(0xab, upper!(get x));
-/// upper!(set x; 0xef);
-/// assert_eq!(0xef, upper!(get x));
-/// # }
-/// ```
-#[macro_export]
-macro_rules! upper {
-    (get $x:expr) => {
-        ($x & 0xff00) >> 8
-    };
-
-    (set $x:expr; $y:expr) => {
-        $x = ($x & 0x00ff) | (($y & 0x00ff) << 8)
-    };
-}
-
-/// Get or set the lower 8 bits of a 16-bit value.
-///
-/// # Examples
-/// ```
-/// # #[macro_use] extern crate spectrum;
-/// # fn main() {
-/// let mut x = 0xabcd;
-/// assert_eq!(0xcd, lower!(get x));
-/// lower!(set x; 0xef);
-/// assert_eq!(0xef, lower!(get x));
-/// # }
-#[macro_export]
-macro_rules! lower {
-    (get $x:expr) => {
-        $x & 0x00ff
-    };
-
-    (set $x:expr; $y:expr) => {
-        $x = ($x & 0xff00) | ($y & 0x00ff)
-    };
-}
-
 /// Emulated Z80 CPU
 #[derive(Default)]
 pub struct Z80 {
