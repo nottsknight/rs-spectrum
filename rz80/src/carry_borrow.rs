@@ -11,7 +11,7 @@ pub trait AddCarry : Sized + Add<Self> {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::carry_borrow::AddCarry;
+    /// # use rz80::carry_borrow::AddCarry;
     /// let (sum, carry3, carry7) = 0x1f.add_carry(0x21);
     /// assert_eq!(0x40, sum);
     /// assert!(carry3);
@@ -44,7 +44,7 @@ pub trait SubBorrow : Sized + Sub<Self> {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::carry_borrow::SubBorrow;
+    /// # use rz80::carry_borrow::SubBorrow;
     /// let (diff, borrow) = 0x17.sub_borrow(0x08);
     /// assert_eq!(0x0f, diff);
     /// assert!(borrow);
