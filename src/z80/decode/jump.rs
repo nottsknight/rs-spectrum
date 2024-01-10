@@ -30,6 +30,6 @@ fn jp_cc_nn(mem: &[u8]) -> DecodeResult {
     }
 
     let cc = bits_to_condition((mem[0] & MID_THREE) >> 3)?;
-    let nn = ((mem[2] as u16) << 8) | mem[1] as u16;
+    let nn = LE::read_u16(&mem[1..]);
     Some((Instr::JP_cc_nn(cc, nn), 3))
 }

@@ -1,10 +1,15 @@
 //! This module defines values for emulating the Zilog Z80 CPU.
+mod decode;
+mod execute;
+mod insts;
+
+pub use insts::{Instruction, Instr};
 use std::{thread, time};
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
 /// Get or set the upper 8 bits of a 16-bit value.
-/// 
+///
 /// # Examples
 /// ```
 /// # #[macro_use] extern crate spectrum;
@@ -12,7 +17,7 @@ const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4
 /// let mut x = 0xabcd;
 /// assert_eq!(0xab, upper!(get x));
 /// upper!(set x => 0xef);
-/// assert_eq!(0xef, upper!(get x)); 
+/// assert_eq!(0xef, upper!(get x));
 /// # }
 /// ```
 #[macro_export]
@@ -23,11 +28,11 @@ macro_rules! upper {
 
     (set $x:expr => $y:expr) => {
         $x = ($x & 0x00ff) | (($y & 0x00ff) << 8)
-    }
+    };
 }
 
 /// Get or set the lower 8 bits of a 16-bit value.
-/// 
+///
 /// # Examples
 /// ```
 /// # #[macro_use] extern crate spectrum;
@@ -35,7 +40,7 @@ macro_rules! upper {
 /// let mut x = 0xabcd;
 /// assert_eq!(0xcd, lower!(get x));
 /// lower!(set x => 0xef);
-/// assert_eq!(0xef, lower!(get x)); 
+/// assert_eq!(0xef, lower!(get x));
 /// # }
 #[macro_export]
 macro_rules! lower {
@@ -181,7 +186,7 @@ impl Z80 {
     }
 
     /// Start the cpu running the fetch-decode-execute cycle.
-    /// 
+    ///
     /// This method loops infinitely unless an error occurs.
     ///
     /// # Arguments
@@ -316,9 +321,5 @@ pub enum Condition {
     /// Sign positive
     P,
     /// Sign negative
-    M
+    M,
 }
-
-mod decode;
-mod execute;
-mod insts;
