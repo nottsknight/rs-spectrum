@@ -171,7 +171,14 @@ pub enum Instruction {
     INC_IX(i8),
     /// `INC (IY+d)`
     INC_IY(i8),
-    DEC_m,
+    /// `DEC r`
+    DEC_r(Register),
+    /// `DEC (HL)`
+    DEC_HL,
+    /// `DEC (IX+d)`
+    DEC_IX(i8),
+    /// `DEC (IY+d)`
+    DEC_IY(i8),
     // Jump
     /// `JP nn`
     JP_nn(u16),

@@ -18,6 +18,8 @@ pub fn arith8(memory: &[u8]) -> DecodeResult {
             0xa6 => Some((Instr::AND_A_IX(*d as i8), 3)),
             0xb6 => Some((Instr::OR_A_IX(*d as i8), 3)),
             0xae => Some((Instr::XOR_A_IX(*d as i8), 3)),
+            0xbe => Some((Instr::CP_IX(*d as i8), 3)),
+            0x35 => Some((Instr::DEC_IX(*d as i8), 3)),
             _ => None,
         },
         [0xfd, op, d, ..] => match op {
@@ -29,6 +31,8 @@ pub fn arith8(memory: &[u8]) -> DecodeResult {
             0xa6 => Some((Instr::AND_A_IY(*d as i8), 3)),
             0xb6 => Some((Instr::OR_A_IY(*d as i8), 3)),
             0xae => Some((Instr::XOR_A_IY(*d as i8), 3)),
+            0xbe => Some((Instr::CP_IY(*d as i8), 3)),
+            0x35 => Some((Instr::DEC_IY(*d as i8), 3)),
             _ => None,
         },
         [0xce, n, ..] => Some((Instr::ADC_A_n(*n), 2)),
@@ -44,15 +48,20 @@ pub fn arith8(memory: &[u8]) -> DecodeResult {
         [0xb6, ..] => Some((Instr::OR_A_HL, 1)),
         [0xee, n, ..] => Some((Instr::XOR_A_n(*n), 2)),
         [0xae, ..] => Some((Instr::XOR_A_HL, 1)),
+        [0xfe, n, ..] => Some((Instr::CP_n(*n), 2)),
+        [0xbe, ..] => Some((Instr::CP_HL, 1)),
+        [0x35, ..] => Some((Instr::DEC_HL, 1)),
         _ => options!(
             add_a_r(memory),
             addc_a_r(memory),
             sub_a_r(memory),
             subc_a_r(memory),
-            and_r(memory),
-            or_r(memory),
-            xor_r(memory),
-            inc_r(memory)
+            and_a_r(memory),
+            or_a_r(memory),
+            xor_a_r(memory),
+            cp_r(memory),
+            inc_r(memory),
+            dec_r(memory)
         ),
     }
 }
@@ -93,7 +102,7 @@ fn subc_a_r(mem: &[u8]) -> DecodeResult {
     Some((Instr::SBC_A_r(r), 1))
 }
 
-fn and_r(mem: &[u8]) -> DecodeResult {
+fn and_a_r(mem: &[u8]) -> DecodeResult {
     if mem[0] & (TOP_TWO | MID_THREE) != 0b10100000 {
         return None;
     }
@@ -102,7 +111,7 @@ fn and_r(mem: &[u8]) -> DecodeResult {
     Some((Instr::AND_A_r(r), 1))
 }
 
-fn or_r(mem: &[u8]) -> DecodeResult {
+fn or_a_r(mem: &[u8]) -> DecodeResult {
     if mem[0] & (TOP_TWO | MID_THREE) != 0b10110000 {
         return None;
     }
@@ -111,13 +120,22 @@ fn or_r(mem: &[u8]) -> DecodeResult {
     Some((Instr::OR_A_r(r), 1))
 }
 
-fn xor_r(mem: &[u8]) -> DecodeResult {
+fn xor_a_r(mem: &[u8]) -> DecodeResult {
     if mem[0] & (TOP_TWO | MID_THREE) != 0b10101000 {
         return None;
     }
 
     let r = bits_to_reg(mem[0] & LOW_THREE)?;
     Some((Instr::XOR_A_r(r), 1))
+}
+
+fn cp_r(mem: &[u8]) -> DecodeResult {
+    if mem[0] & (TOP_TWO | MID_THREE) != 0b10111000 {
+        return None;
+    }
+
+    let r = bits_to_reg(mem[0] & LOW_THREE)?;
+    Some((Instr::CP_r(r), 1))
 }
 
 fn inc_r(mem: &[u8]) -> DecodeResult {
@@ -127,4 +145,13 @@ fn inc_r(mem: &[u8]) -> DecodeResult {
 
     let r = bits_to_reg((mem[0] & MID_THREE) >> 3)?;
     Some((Instr::INC_r(r), 1))
+}
+
+fn dec_r(mem: &[u8]) -> DecodeResult {
+    if mem[0] & (TOP_TWO | LOW_THREE) != 0b00000101 {
+        return None;
+    }
+
+    let r = bits_to_reg((mem[0] & MID_THREE) >> 3)?;
+    Some((Instr::DEC_r(r), 1))
 }
