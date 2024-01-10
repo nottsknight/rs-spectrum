@@ -1,3 +1,4 @@
+//! Provides traits for types that can track carries and borrows.
 use std::ops::{Add, Sub};
 
 /// Trait for types that can track carries when they are added.

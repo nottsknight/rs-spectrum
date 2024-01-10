@@ -1,10 +1,11 @@
 //! Methods, macros, and helper functions for decoding Z80 instructions.
-
+mod arith8;
 mod exchange;
 mod jump;
 mod load8;
 
-use super::{insts::Instr, Condition, Register, Z80};
+use super::{Instruction, Condition, Register, Z80};
+use arith8::arith8;
 use exchange::exchange;
 use jump::jump;
 use load8::load8;
@@ -27,6 +28,10 @@ fn bits_to_reg(bits: u8) -> Option<Register> {
     }
 }
 
+/// Returns a [`Condition`] if the provided three-bit value maps to a condition.
+/// 
+/// # Arguments
+/// - `bits`: the bits to convert
 #[inline]
 fn bits_to_condition(bits: u8) -> Option<Condition> {
     match bits {
@@ -49,21 +54,29 @@ fn bits_to_condition(bits: u8) -> Option<Condition> {
 /// ```
 /// # #[macro_use(options)] extern crate rz80;
 /// # fn main() {
-/// let x = options!(Some(1), None::<u8>);
+/// let x: Option<u8> = options!(Some(1), None);
 /// assert_eq!(Some(1), x);
-/// let y = options!(None::<u8>, None::<u8>, Some(2), Some(3));
+/// let y: Option<u8> = options!(None, None, Some(2), Some(3));
 /// assert_eq!(Some(2), y);
 /// # }
 /// ```
 ///
-/// The result can be `unwrapped`, which will panic in the normal way:
+/// The result can be unwrapped:
 /// ```
 /// # #[macro_use(options)] extern crate rz80;
 /// # fn main() {
-/// let x = options!(Some(1), None::<u8>; unwrap);
+/// let x: u8 = options!(unwrap Some(1), None);
 /// assert_eq!(1, x);
 /// # }
-///
+/// ```
+/// 
+/// Unwrapping will panic in the normal way:
+/// ```should_panic
+/// # #[macro_use(options)] extern crate rz80;
+/// # fn main() {
+/// let x: u8 = options!(unwrap None, None);
+/// # }
+/// ```
 #[macro_export]
 macro_rules! options {
     ($opt:expr) => {
@@ -80,33 +93,19 @@ macro_rules! options {
         }
     };
 
-    ($($opts:expr),+; unwrap) => {
+    (unwrap $($opts:expr),+) => {
         options!($($opts),+).unwrap()
     }
 }
 
-#[cfg(test)]
-mod options_tests {
-    use rstest::*;
-
-    #[rstest]
-    fn test_single_option() {
-        let result: Option<u8> = options!(Some(1));
-        assert_eq!(Some(1), result);
-    }
-
-    #[rstest]
-    fn test_several_option() {
-        let result: Option<u8> = options!(None::<u8>, None::<u8>, Some(2));
-        assert_eq!(Some(2), result);
-    }
-}
-
 /// If decoding succeeds, returns both the instruction and the number of bytes read.
-type DecodeResult = Option<(Instr, u8)>;
+type DecodeResult = Option<(Instruction, u8)>;
 
+/// Bit mask `11000000`.
 const TOP_TWO: u8 = 0b11000000;
+/// Bit mask `00111000`.
 const MID_THREE: u8 = 0b00111000;
+/// Bit mask `00000111`.
 const LOW_THREE: u8 = 0b00000111;
 
 impl Z80 {
@@ -115,6 +114,6 @@ impl Z80 {
     /// # Arguments
     /// - `memory`: slice containing the instruction to decode
     pub fn decode(&self, memory: &[u8]) -> DecodeResult {
-        options!(load8(memory), exchange(memory), jump(memory))
+        options!(load8(memory), exchange(memory), jump(memory), arith8(memory))
     }
 }

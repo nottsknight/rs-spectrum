@@ -1,5 +1,5 @@
 //! Functions for decoding Jump instructions.
-use super::{bits_to_condition, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
+use super::{bits_to_condition, DecodeResult, Instruction, LOW_THREE, MID_THREE, TOP_TWO};
 use byteorder::{ByteOrder, LE};
 
 /// Attempt to decode a Jump instruction.
@@ -10,17 +10,17 @@ pub fn jump(memory: &[u8]) -> DecodeResult {
     match memory {
         [0xc3, rest @ ..] => {
             let nn = LE::read_u16(rest);
-            Some((Instr::JP_nn(nn), 3))
+            Some((Instruction::JP_nn(nn), 3))
         }
-        [0x18, e, ..] => Some((Instr::JR_e((*e as i8) + 2), 2)),
-        [0x38, e, ..] => Some((Instr::JR_C_e((*e as i8) + 2), 2)),
-        [0x30, e, ..] => Some((Instr::JR_NC_e((*e as i8) + 2), 2)),
-        [0x28, e, ..] => Some((Instr::JR_Z_e((*e as i8) + 2), 2)),
-        [0x20, e, ..] => Some((Instr::JR_NZ_e((*e as i8) + 2), 2)),
-        [0xe9, ..] => Some((Instr::JP_HL, 1)),
-        [0xdd, 0xe9, ..] => Some((Instr::JP_IX, 2)),
-        [0xfd, 0xe9, ..] => Some((Instr::JP_IY, 2)),
-        [0x10, e, ..] => Some((Instr::DJNZ_e((*e as i8) + 2), 2)),
+        [0x18, e, ..] => Some((Instruction::JR_e((*e as i8) + 2), 2)),
+        [0x38, e, ..] => Some((Instruction::JR_C_e((*e as i8) + 2), 2)),
+        [0x30, e, ..] => Some((Instruction::JR_NC_e((*e as i8) + 2), 2)),
+        [0x28, e, ..] => Some((Instruction::JR_Z_e((*e as i8) + 2), 2)),
+        [0x20, e, ..] => Some((Instruction::JR_NZ_e((*e as i8) + 2), 2)),
+        [0xe9, ..] => Some((Instruction::JP_HL, 1)),
+        [0xdd, 0xe9, ..] => Some((Instruction::JP_IX, 2)),
+        [0xfd, 0xe9, ..] => Some((Instruction::JP_IY, 2)),
+        [0x10, e, ..] => Some((Instruction::DJNZ_e((*e as i8) + 2), 2)),
         _ => jp_cc_nn(memory),
     }
 }
@@ -32,5 +32,5 @@ fn jp_cc_nn(mem: &[u8]) -> DecodeResult {
 
     let cc = bits_to_condition((mem[0] & MID_THREE) >> 3)?;
     let nn = LE::read_u16(&mem[1..]);
-    Some((Instr::JP_cc_nn(cc, nn), 3))
+    Some((Instruction::JP_cc_nn(cc, nn), 3))
 }

@@ -1,8 +1,6 @@
 //! Defines constants for representing Z80 instructions with their arguments.
 use super::{Register, Condition};
 
-pub type Instr = Instruction;
-
 /// A single Z80 instruction with its arguments.
 /// 
 /// Instructions implement `Copy` so there is no need to worry about passing references.

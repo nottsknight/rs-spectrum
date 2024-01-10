@@ -1,14 +1,15 @@
 //! Provides an Zilog Z80 CPU.
-
 pub mod carry_borrow;
 mod decode;
 mod execute;
 pub mod hi_lo;
-pub mod insts;
+mod insts;
 
 use hi_lo::HiLo;
 use std::{thread, time};
+pub use insts::Instruction;
 
+/// Constant representing a clock speed of 4KHz.
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
 /// Emulated Z80 CPU
