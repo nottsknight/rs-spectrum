@@ -199,7 +199,15 @@ checksum = "e898588f33fdd5b9420719948f9f2a32c922a246964576f71ba7f24f80610fbc"
 name = "rs-spectrum"
 version = "0.1.0"
 dependencies = [
+ "rspectrum",
+]
+
+[[package]]
+name = "rspectrum"
+version = "0.1.0"
+dependencies = [
  "rstest",
+ "rz80",
 ]
 
 [[package]]
@@ -238,6 +246,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
 dependencies = [
  "semver",
+]
+
+[[package]]
+name = "rz80"
+version = "0.1.0"
+dependencies = [
+ "rstest",
 ]
 
 [[package]]

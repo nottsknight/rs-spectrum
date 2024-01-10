@@ -1,7 +1,8 @@
 //! This module defines values for emulating the Zilog Z80 CPU.
-use std::{thread, time};
+mod hi_lo;
 
-use crate::hi_lo::HiLo;
+use std::{thread, time};
+use hi_lo::HiLo;
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 

@@ -1,6 +1,4 @@
-pub mod hi_lo;
-pub mod z80;
-use z80::Z80;
+use rz80::Z80;
 
 const MEM_SIZE: usize = (16 + 48) * 1024;
 

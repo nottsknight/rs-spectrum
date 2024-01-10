@@ -1,5 +1,5 @@
 //! Functions for executing 8-bit load instructions.
-use crate::z80::{Z80, Register};
+use crate::{Z80, Register};
 
 #[inline]
 pub fn load_r_r(cpu: &mut Z80, r: Register, r1: Register) {

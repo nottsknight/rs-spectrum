@@ -1,0 +1,12 @@
+[package]
+name = "rs-spectrum"
+version = "0.1.0"
+edition = "2021"
+
+authors = ["Ian Knight <ian.knight.1990@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/nottsknight/rs-spectrum"
+license = "MIT"
+
+[dependencies]
+rspectrum = { path = "../rspectrum" }

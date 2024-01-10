@@ -1,4 +1,4 @@
-use crate::z80::{Condition, Flag, Register, Z80};
+use crate::{Condition, Flag, Register, Z80};
 
 #[inline]
 pub fn jump_nn(cpu: &mut Z80, nn: u16) {

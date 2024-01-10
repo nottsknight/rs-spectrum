@@ -1,7 +1,4 @@
-use crate::{
-    hi_lo::HiLo,
-    z80::{Flag, Register, Z80},
-};
+use crate::{hi_lo::HiLo, Flag, Register, Z80};
 use std::mem::swap;
 
 #[inline]
