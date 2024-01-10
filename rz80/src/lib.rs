@@ -1,5 +1,5 @@
 //! This module defines values for emulating the Zilog Z80 CPU.
-mod hi_lo;
+pub mod hi_lo;
 
 use std::{thread, time};
 use hi_lo::HiLo;
@@ -75,7 +75,7 @@ impl Z80 {
     ///
     /// # Example
     /// ```
-    /// # use spectrum::z80::{Register, Z80};
+    /// # use rz80::{Register, Z80};
     /// # let mut cpu: Z80 = Default::default();
     /// cpu.set_reg(Register::C, 0xabcd);
     /// assert_eq!(0xcd, cpu.reg(Register::C));
@@ -112,7 +112,7 @@ impl Z80 {
     ///
     /// # Examples
     /// ```
-    /// # use spectrum::z80::{Z80, Flag};
+    /// # use rz80::{Z80, Flag};
     /// # let mut z80: Z80 = Default::default();
     /// z80.set_flag(Flag::N, true);
     /// assert!(z80.flag(Flag::N));

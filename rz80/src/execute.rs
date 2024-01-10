@@ -15,7 +15,7 @@ mod load8;
 ///
 /// Basic example forcing a call to `foo` to last at least 1000ns:
 /// ```
-/// # #[macro_use] extern crate spectrum;
+/// # #[macro_use] extern crate rz80;
 /// # use std::time::{Duration, Instant};
 /// #
 /// # fn foo(x: u8, y: u8) -> u8 { x + y }
@@ -26,7 +26,7 @@ mod load8;
 ///
 /// The time limited function can still return its normal return value:
 /// ```
-/// # #[macro_use] extern crate spectrum;
+/// # #[macro_use] extern crate rz80;
 /// # use std::time::{Duration, Instant};
 /// #
 /// # fn foo(x: u8, y: u8) -> u8 { x + y }

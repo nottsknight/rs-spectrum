@@ -6,7 +6,7 @@ pub trait HiLo {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::hi_lo::HiLo;
+    /// # use rz80::hi_lo::HiLo;
     /// assert_eq!(0x1, 0x12_u8.hi());
     /// assert_eq!(0x12, 0x1234_u16.hi());
     /// ```
@@ -19,7 +19,7 @@ pub trait HiLo {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::hi_lo::HiLo;
+    /// # use rz80::hi_lo::HiLo;
     /// let mut n: u8 = 0xab;
     /// n.set_hi(0x4);
     /// assert_eq!(0x4b, n);
@@ -30,7 +30,7 @@ pub trait HiLo {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::hi_lo::HiLo;
+    /// # use rz80::hi_lo::HiLo;
     /// assert_eq!(0x2, 0x12_u8.lo());
     /// assert_eq!(0x34, 0x1234_u16.lo());
     /// ```
@@ -43,7 +43,7 @@ pub trait HiLo {
     /// 
     /// # Example
     /// ```
-    /// # use spectrum::hi_lo::HiLo;
+    /// # use rz80::hi_lo::HiLo;
     /// let mut n: u16 = 0xfedc;
     /// n.set_lo(0x10);
     /// assert_eq!(0xfe10, n);

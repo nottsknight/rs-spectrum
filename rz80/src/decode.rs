@@ -46,7 +46,7 @@ fn bits_to_condition(bits: u8) -> Option<Condition> {
 ///
 /// # Examples
 /// ```
-/// # #[macro_use(options)] extern crate spectrum;
+/// # #[macro_use(options)] extern crate rz80;
 /// # fn main() {
 /// let x = options!(Some(1), None::<u8>);
 /// assert_eq!(Some(1), x);
@@ -57,7 +57,7 @@ fn bits_to_condition(bits: u8) -> Option<Condition> {
 ///
 /// The result can be `unwrapped`, which will panic in the normal way:
 /// ```
-/// # #[macro_use(options)] extern crate spectrum;
+/// # #[macro_use(options)] extern crate rz80;
 /// # fn main() {
 /// let x = options!(Some(1), None::<u8>; unwrap);
 /// assert_eq!(1, x);
