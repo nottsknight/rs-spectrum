@@ -1,3 +1,4 @@
+//! Functions for executing Exchange instructions.
 use crate::{hi_lo::HiLo, Flag, Register, Z80};
 use std::mem::swap;
 

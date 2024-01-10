@@ -1,4 +1,5 @@
-//! Provides methods for decoding instructions.
+//! Methods, macros, and helper functions for decoding Z80 instructions.
+
 mod exchange;
 mod jump;
 mod load8;

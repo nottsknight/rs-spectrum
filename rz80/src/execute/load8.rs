@@ -1,4 +1,4 @@
-//! Functions for executing 8-bit load instructions.
+//! Functions for executing 8-bit Load instructions.
 use crate::{Z80, Register};
 
 #[inline]

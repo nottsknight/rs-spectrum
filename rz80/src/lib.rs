@@ -1,4 +1,5 @@
-//! This module defines values for emulating the Zilog Z80 CPU.
+//! Provides an Zilog Z80 CPU.
+
 mod decode;
 mod execute;
 pub mod hi_lo;

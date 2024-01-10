@@ -1,3 +1,4 @@
+//! Functions for decoding Jump instructions.
 use super::{bits_to_condition, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
 
 /// Attempt to decode a Jump instruction.

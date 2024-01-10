@@ -1,4 +1,4 @@
-//! Functions for decoding 8-bit load instructions.
+//! Functions for decoding 8-bit Load instructions.
 use crate::options;
 use super::{bits_to_reg, DecodeResult, Instr, LOW_THREE, MID_THREE, TOP_TWO};
 

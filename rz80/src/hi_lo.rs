@@ -1,3 +1,7 @@
+//! Defines a trait for types that can be divided into 'high' and 'low' parts
+//! along with some implementations.
+
+/// Trait for types that have a 'high' and 'low' part.
 pub trait HiLo {
     /// Type that represents half the width of the implementing type.
     type T;

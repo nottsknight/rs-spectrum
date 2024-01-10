@@ -1,3 +1,4 @@
+//! Functions for executing Jump instructions.
 use crate::{Condition, Flag, Register, Z80};
 
 #[inline]

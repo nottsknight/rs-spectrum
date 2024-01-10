@@ -1,3 +1,4 @@
+//! Functions for decoding Exchange instructions.
 use super::{Instr, DecodeResult};
 
 /// Attempt to decode an Exchange, Transfer, or Search instruction.

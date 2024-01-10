@@ -1,5 +1,6 @@
+//! Methods and macros useful for executing Z80 instructions.
+
 use super::{insts::Instr, Flag, Z80};
-use crate::min_time;
 use std::time::{Duration, Instant};
 mod exchange;
 mod jump;
