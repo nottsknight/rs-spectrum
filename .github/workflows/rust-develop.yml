@@ -1,10 +1,10 @@
-name: Rust
+name: Rust [develop]
 
 on:
   push:
-    branches: [ "develop", "master" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "develop", "master" ]
+    branches: [ "develop" ]
 
 env:
   CARGO_TERM_COLOR: always

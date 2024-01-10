@@ -1,8 +1,11 @@
 //! This module defines values for emulating the Zilog Z80 CPU.
+mod decode;
+mod execute;
 pub mod hi_lo;
+pub mod insts;
 
-use std::{thread, time};
 use hi_lo::HiLo;
+use std::{thread, time};
 
 const CLOCK_SPEED: time::Duration = time::Duration::from_nanos(1_000_000_000 / 4_000);
 
@@ -276,7 +279,3 @@ pub enum Condition {
     /// Sign negative
     M,
 }
-
-mod decode;
-mod execute;
-mod insts;
