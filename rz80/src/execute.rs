@@ -2,6 +2,7 @@
 
 use super::{insts::Instr, Flag, Z80};
 use std::time::{Duration, Instant};
+mod arith8;
 mod exchange;
 mod jump;
 mod load8;
@@ -129,7 +130,12 @@ impl Z80 {
             Instr::JP_HL => min_time!(jump::jump_hl(self); 1000),
             Instr::JP_IX => min_time!(jump::jump_ix(self); 1000),
             Instr::JP_IY => min_time!(jump::jump_iy(self); 1000),
+            // 8-bit Arithmetic
+            Instr::ADD_A_r(r) => min_time!(arith8::add_a_r(self, r); 1000),
+            Instr::INC_r(r) => min_time!(arith8::inc_r(self, r); 1000),
+            Instr::INC_HL => min_time!(arith8::inc_hl(self, memory); 2750),
             Instr::DJNZ_e(e) => min_time!(jump::djnz_e(self, e); 3250),
+            _ => todo!("Implement arith8 execution")
         }
     }
 }

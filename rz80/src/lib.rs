@@ -1,5 +1,6 @@
 //! Provides an Zilog Z80 CPU.
 
+pub mod carry_borrow;
 mod decode;
 mod execute;
 pub mod hi_lo;
@@ -261,7 +262,7 @@ pub enum Flag {
 }
 
 /// Enums for identifying different jump conditions.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Condition {
     /// Non-zero
     NZ,
