@@ -1,12 +1,14 @@
 [package]
 name = "rz80"
+description = "Library providing an emulated Zilog Z80 CPU"
 version = "0.1.0"
 edition = "2021"
 
-authors = ["Ian Knight <ian.knight.1990@gmail.com>"]
-readme = "README.md"
-repository = "https://github.com/nottsknight/rs-spectrum"
-license = "MIT"
+authors.workspace = true
+categories.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
 
 [dependencies]
 byteorder = "1.5.0"

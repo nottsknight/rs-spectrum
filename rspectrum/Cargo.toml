@@ -1,12 +1,14 @@
 [package]
 name = "rspectrum"
+description = "Library providing an emulated ZX Spectrum"
 version = "0.1.0"
 edition = "2021"
 
-authors = ["Ian Knight <ian.knight.1990@gmail.com>"]
-readme = "README.md"
-repository = "https://github.com/nottsknight/rs-spectrum"
-license = "MIT"
+authors.workspace = true
+categories.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
 
 [dependencies]
 rz80 = { path = "../rz80" }

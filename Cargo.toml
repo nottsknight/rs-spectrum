@@ -1,3 +1,11 @@
 [workspace]
 members = ["rs-spectrum", "rspectrum", "rz80"]
 resolver = "2"
+
+[workspace.package]
+authors = ["Ian Knight <ian.knight.1990@gmail.com>"]
+categories = ["emulators"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/nottsknight/rs-spectrum.git"
+
