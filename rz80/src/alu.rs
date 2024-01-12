@@ -1,16 +1,25 @@
 //! Provides common functions for performing ALU operations.
 
+/// Struct providing ALU methods.
 pub struct ALU;
 
+/// Struct containing the return data from an add operation.
 #[derive(Debug, PartialEq)]
 pub struct ALUAdd {
+    /// Result of the addition
     pub sum: u8,
+    /// `true` if a carry occurred from bit 3
     pub carry3: bool,
+    /// `true` if a carry occurred from bit 7
     pub carry7: bool,
+    /// `true` if the addition overflowed
     pub overflow: bool,
 }
 
 impl ALUAdd {
+    /// Construct a new `ALUAdd`.
+    ///
+    /// Arguments match directly to struct field names.
     pub fn new(sum: u8, carry3: bool, carry7: bool, overflow: bool) -> ALUAdd {
         ALUAdd {
             sum,
@@ -66,6 +75,11 @@ impl ALU {
         ALU::add(lhs, 1)
     }
 
+    /// Subtract the first argument from the second, tracking overflows.
+    ///
+    /// # Arguments
+    /// - `lhs`: minuend
+    /// - `rhs`: subtrahend
     pub fn sub(lhs: u8, rhs: u8) -> ALUSub {
         let lo1 = lhs & 0x0f;
         let lo2 = rhs & 0x0f;
